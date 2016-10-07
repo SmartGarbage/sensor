@@ -93,7 +93,7 @@ void loop() {
   else {
     digitalWrite(led4, LOW);
   }
-  if (distance < 15) {
+  if (distance < 16) {
     digitalWrite(led5, HIGH);
     Serial.println(sensorValue);
     //sound = 290;
@@ -101,7 +101,7 @@ void loop() {
   else {
     digitalWrite(led5, LOW);
   }
-  if (distance < 10) {
+  if (distance < 8) {
     digitalWrite(led6, HIGH);
     Serial.println(distance);
     Serial.println(sensorValue);
@@ -112,7 +112,7 @@ void loop() {
   }
 
   if (distance > maximumRange || distance <= minimumRange) {
-    Serial.println("Out of range");
+    Serial.println("Empty Garbgage bin");
     Serial.println(sensorValue);
     //noTone(buzzer);
   }
