@@ -1,4 +1,14 @@
 // George Politis Smart Garbage
+// physical set up
+//VCC to arduino 5v 
+//GND to arduino GND
+//Echo to Arduino pin 7 
+//Trig to Arduino pin 8
+
+
+//-----------Code-------------//
+
+
 #define trigPin 7
 #define echoPin 6
 #define led 13
@@ -9,11 +19,18 @@
 #define led6 8
 #define buzzer 3
 
+
 // initialize sound variables
 int sound = 250;
-// lowest and highest sensor readings:
-const int sensorMin = 0;     // sensor minimum
-const int sensorMax = 1024;  // sensor maximum
+// lowest and highest sensor readings for flame:
+const int sensorMin = 0;     // sensor minimum for flame
+const int sensorMax = 1024;  // sensor maximum for flame
+
+int maximumRange = 60;
+int minimumRange = 0;
+long duration, distance;
+
+int sensorValue = digitalRead(echoPin);
 
 
 void setup() {
@@ -27,98 +44,110 @@ void setup() {
   pinMode(led5, OUTPUT);
   pinMode(led6, OUTPUT);
   pinMode(buzzer, OUTPUT);
- 
+
 }
 
 void loop() {
-  long duration, distance;
-  digitalWrite(trigPin, LOW); 
+  digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
+  
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
+  
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
-  distance = (duration/2) / 29.1;
- 
-// Disabling sound to use it for
-// the flame sensor
-  if (distance <= 30) {
+  //distance = (duration / 2) / 29.1;
+  distance = duration / 58.2;
+
+  // Disabling sound to use it for
+  // the flame sensor
+  if (distance <= 55) {
     digitalWrite(led, HIGH);
+    Serial.println(sensorValue);
     //sound = 250;
-}
-  else {
-    digitalWrite(led,LOW);
   }
-  if (distance < 25) {
-      digitalWrite(led2, HIGH);
-      //sound = 260;
-}
   else {
-      digitalWrite(led2, LOW);
+    digitalWrite(led, LOW);
   }
-  if (distance < 20) {
-      digitalWrite(led3, HIGH);
-      //sound = 270;
-} 
+  if (distance < 45) {
+    digitalWrite(led2, HIGH);
+    Serial.println(sensorValue);
+    //sound = 260;
+  }
+  else {
+    digitalWrite(led2, LOW);
+  }
+  if (distance < 35) {
+    digitalWrite(led3, HIGH);
+    Serial.println(sensorValue);
+    //sound = 270;
+  }
   else {
     digitalWrite(led3, LOW);
   }
-  if (distance < 15) {
+  if (distance < 25) {
     digitalWrite(led4, HIGH);
+    Serial.println(sensorValue);
     //sound = 280;
-}
+  }
   else {
-    digitalWrite(led4,LOW);
+    digitalWrite(led4, LOW);
+  }
+  if (distance < 15) {
+    digitalWrite(led5, HIGH);
+    Serial.println(sensorValue);
+    //sound = 290;
+  }
+  else {
+    digitalWrite(led5, LOW);
   }
   if (distance < 10) {
-    digitalWrite(led5, HIGH);
-    //sound = 290;
-}
-  else {
-    digitalWrite(led5,LOW);
-  }
-  if (distance < 5) {
     digitalWrite(led6, HIGH);
+    Serial.println(distance);
+    Serial.println(sensorValue);
     //sound = 300;
-}
-  else {
-    digitalWrite(led6,LOW);
   }
- 
-  if (distance > 30 || distance <= 0){
+  else {
+    digitalWrite(led6, LOW);
+  }
+
+  if (distance > maximumRange || distance <= minimumRange) {
     Serial.println("Out of range");
+    Serial.println(sensorValue);
     //noTone(buzzer);
   }
   else {
-    Serial.print(distance);
+    Serial.println(distance);
     Serial.println(" cm");
-   // tone(buzzer, sound);
-   
+    Serial.println(sensorValue);
+    // tone(buzzer, sound);
+
   }
+  ////////////------------Flame sensor-------------//////
   // read the sensor on analog A0:
   int sensorReading = analogRead(A0);
   // map the sensor range (four options):
   // ex: 'long int map(long int, long int, long int, long int, long int)'
   int range = map(sensorReading, sensorMin, sensorMax, 0, 3);
-  
+
   // range value:
   switch (range) {
-  case 0:    // A fire closer than 1.5 feet away.
-    Serial.println("** Close Fire **");
-    sound = 2050;
-    tone(buzzer, sound);
-    break;
-  case 1:    // A fire between 1-3 feet away.
-    Serial.println("** Distant Fire **");
-    sound = 550;
-    tone(buzzer, sound);
-    break;
-  case 2:    // No fire detected.
-    Serial.println("No Fire");
-    // mutes the sound
-    noTone(buzzer);
-    break;
+    case 0:    // A fire closer than 1.5 feet away.
+      //Serial.println("** Close Fire **");
+      sound = 2050;
+     // tone(buzzer, sound);
+      break;
+    case 1:    // A fire between 1-3 feet away.
+     // Serial.println("** Distant Fire **");
+      sound = 550;
+     // tone(buzzer, sound);
+      break;
+    case 2:    // No fire detected.
+     // Serial.println("No Fire");
+      // mutes the sound
+      noTone(buzzer);
+      break;
   }
-  
-  delay(500);
+
+  delay(2000);
 }
