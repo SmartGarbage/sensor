@@ -61,7 +61,7 @@ void loop() {
 
   // Disabling sound to use it for
   // the flame sensor
-  if (distance <= 55) {
+  if (distance <= 60) {
     digitalWrite(led, HIGH);
     Serial.println(sensorValue);
     //sound = 250;
@@ -93,7 +93,7 @@ void loop() {
   else {
     digitalWrite(led4, LOW);
   }
-  if (distance < 16) {
+  if (distance < 18) {
     digitalWrite(led5, HIGH);
     Serial.println(sensorValue);
     //sound = 290;
@@ -101,7 +101,7 @@ void loop() {
   else {
     digitalWrite(led5, LOW);
   }
-  if (distance < 8) {
+  if (distance < 10) {
     digitalWrite(led6, HIGH);
     Serial.println(distance);
     Serial.println(sensorValue);
@@ -149,5 +149,5 @@ void loop() {
       break;
   }
 
-  delay(2000);
+  delay(500);
 }
